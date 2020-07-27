@@ -1,0 +1,23 @@
+{
+  "name": "builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "1.19.0",
+    "chance": "1.1.6",
+    "express": "4.17.1",
+    "gulp": "4.0.2",
+    "gulp-htmlmin": "5.0.1",
+    "gulp-replace": "1.0.0",
+    "gulp-watch": "5.0.1",
+    "node-notifier": "7.0.1",
+    "socket.io": "2.3.0",
+    "through2": "4.0.2"
+  }
+}
