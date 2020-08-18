@@ -1,6 +1,9 @@
 const socketio = require('socket.io');
 const express = require('express');
 const bodyParser = require('body-parser');
+const fs = require('fs');
+const path = require('path');
+const exec = require('child_process').exec;
 
 module.exports = (o) => {
 	const ee = o.ee;
@@ -26,7 +29,27 @@ module.exports = (o) => {
 	      notifier ? notifier.notify(msg) : console.log(msg);
 	    }
 
+	    function edit(html) {
+	    	let stylesDir = path.resolve(o.tmp, 'styles');
+	    	let stylesFile = path.resolve(stylesDir, 'styles.css');
+	    	let htmlFile =  path.resolve(o.tmp, 'index.html');
+	    	if (!fs.existsSync(stylesDir)){
+	    	    fs.mkdirSync(stylesDir);
+	    	}
+	    	fs.writeFileSync(stylesFile, '', 'utf8');
+	    	fs.writeFileSync(htmlFile, html, 'utf8');
+	    	exec(`subl ${htmlFile}`, function callback(error, stdout, stderr){
+	    	    if (error) console.log(error);
+	    	});
+	    	exec(`subl ${stylesFile}`, function callback(error, stdout, stderr){
+	    	    if (error) console.log(error);
+	    	});
+
+	    }
+
 	    ee.on('update', update);
+
+	    socket.on('edit', edit);
 
 	    socket.on('disconnect', () => {
 	      console.log(`Window "${socket.id}" has been disconnected.`);
