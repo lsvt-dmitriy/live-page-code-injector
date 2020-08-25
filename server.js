@@ -20,7 +20,8 @@ module.exports = (o) => {
 
 	io.on('connection', (socket) =>{
 		let msg = `Window "${socket.id}" is connected.`;
-		notifier ? notifier.notify(msg) : console.log(msg);
+		if (notifier) notifier.notify(msg)
+		console.log(msg);
 
 	    function update(data) {
 	      console.log(`${data.html.length} bytes emitted.`);
@@ -44,7 +45,6 @@ module.exports = (o) => {
 	    	exec(`subl ${stylesFile}`, function callback(error, stdout, stderr){
 	    	    if (error) console.log(error);
 	    	});
-
 	    }
 
 	    ee.on('update', update);

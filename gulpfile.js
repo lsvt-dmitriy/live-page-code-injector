@@ -12,7 +12,7 @@ const tap = require('gulp-tap');
 const minifyInline = require('gulp-minify-inline');
 const port = 3005;
 const paths = {
-	project: process.argv.indexOf('--project') == -1 ? `src/project` : process.argv[process.argv.indexOf('--project') + 1],
+	project: process.argv.indexOf('--project') == -1 ? `src/tmp` : process.argv[process.argv.indexOf('--project') + 1],
 	html: `**/*.html`,
 	cfm: `**/*.cfm`,
 	css: `**/*.css`,
@@ -23,14 +23,13 @@ const paths = {
 	}
 }
 
-console.log(paths.tmp.css, paths.tmp.html);
+// console.log(paths.tmp.css, paths.tmp.html);
 
 paths.project = fs.realpathSync(paths.project);
 paths.template = path.resolve(paths.template);
 paths.cfm = `${paths.project}/${paths.cfm}`;
 paths.css = `${paths.project}/${paths.css}`;
 paths.html = `${paths.project}/${paths.html}`;
-
 
 const buildSubDir = () => {
 	// return src(paths.css, { since: lastRun(css) })
@@ -52,28 +51,32 @@ const build = async (file, t) => {
 	console.log(`build: ${file.path}`);
 
 	let getStreamContent = (file) => {
-		return file.contents.toString('utf8')
+		return file ? file.contents.toString('utf8') : ''
 	}
 
 	let cfm = new Promise((resolve, reject) => {
-		let path = file.path + '/*.cfm';
-		src(path)
+		src(file.path + '/*.cfm')
 		.pipe(tap((file, t) => {
 			resolve(file);
 		}))
 	})
 
 	let html = new Promise((resolve, reject) => {
-		let path = file.path + '/*.html';
-		src(path)
+		src(file.path + '/*.html')
 		.pipe(tap((file, t) => {
 			resolve(file);
 		}))
 	})
 
 	let styles = new Promise((resolve, reject) => {
+		let myTimeout;
+		setTimeout(() => {
+			console.log(`CSS Not found`);
+			resolve();
+		}, 500);
 		src(file.path + '/**/*.css')
 		.pipe(tap((file, t) => {
+			clearTimeout(myTimeout);
 			resolve(file);
 		}))
 	}).then(getStreamContent)
@@ -85,7 +88,8 @@ const build = async (file, t) => {
 	return src(paths.template)
 		.pipe(replace(`<!-- HTML -->`, results[0]))
 	    .pipe(replace(`<!-- CSS -->`, `<style scoped>${results[1]}</style>`))
-		.pipe(minifyInline({ collapseWhitespace: true })).on('error', function(error) {
+		.pipe(minifyInline({ collapseWhitespace: true }))
+		.on('error', function(error) {
 			let msg = `Invalid HTML`;
 			notifier.notify(msg);
 			return done(msg);
