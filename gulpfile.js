@@ -55,14 +55,14 @@ const build = async (file, t) => {
 	}
 
 	let cfm = new Promise((resolve, reject) => {
-		src(file.path + '/*.cfm')
+		src(file.path + '/*.cfm', {since: new Date().getTime() - 1000})
 		.pipe(tap((file, t) => {
 			resolve(file);
 		}))
 	})
 
 	let html = new Promise((resolve, reject) => {
-		src(file.path + '/*.html')
+		src(file.path + '/*.html', {since: new Date().getTime() - 1000})
 		.pipe(tap((file, t) => {
 			resolve(file);
 		}))
@@ -74,7 +74,7 @@ const build = async (file, t) => {
 			console.log(`CSS Not found`);
 			resolve();
 		}, 500);
-		src(file.path + '/**/*.css')
+		src(file.path + '/**/*.css', {since: new Date().getTime() - 1000})
 		.pipe(tap((file, t) => {
 			clearTimeout(myTimeout);
 			resolve(file);
