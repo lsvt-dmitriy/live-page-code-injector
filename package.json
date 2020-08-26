@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "gulp-changed": "4.0.2",
+    "gulp-file-inline": "2.2.3",
     "gulp-minify-inline": "1.1.0",
     "gulp-tap": "2.0.0"
   }

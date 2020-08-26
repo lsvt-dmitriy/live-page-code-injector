@@ -22,6 +22,7 @@ const paths = {
 		html: path.resolve(__dirname, 'src/tmp') + '/*.html'
 	}
 }
+const fileInline = require('gulp-file-inline');
 
 // console.log(paths.tmp.css, paths.tmp.html);
 
@@ -56,6 +57,7 @@ const build = async (file, t) => {
 
 	let cfm = new Promise((resolve, reject) => {
 		src(file.path + '/*.cfm', {since: new Date().getTime() - 1000})
+		.pipe(fileInline())
 		.pipe(tap((file, t) => {
 			resolve(file);
 		}))
@@ -63,6 +65,7 @@ const build = async (file, t) => {
 
 	let html = new Promise((resolve, reject) => {
 		src(file.path + '/*.html', {since: new Date().getTime() - 1000})
+		.pipe(fileInline())
 		.pipe(tap((file, t) => {
 			resolve(file);
 		}))
